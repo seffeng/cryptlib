@@ -6,6 +6,7 @@
 namespace Seffeng\Cryptlib;
 
 use Seffeng\Cryptlib\Exceptions\CryptException;
+use Seffeng\Cryptlib\Interfaces\CryptInterface;
 
 class Crypt
 {
@@ -17,15 +18,15 @@ class Crypt
 
     /**
      *
-     * @var string
+     * @var array
      */
-    protected $privateKey;
+    protected $allowClients = ['RSA'];
 
     /**
      *
      * @var string
      */
-    protected $publicKey;
+    protected $defaultClient = 'RSA';
 
     /**
      *
@@ -37,9 +38,12 @@ class Crypt
         if (!extension_loaded('openssl')) {
             throw new CryptException('openssl extension must be loaded.');
         }
-        $this->client = $client;
+        if (!in_array($client, $this->allowClients)) {
+            $client = $this->defaultClient;
+        }
+        $class = '\\Seffeng\\Cryptlib\\Clients\\'. $client;
+        $this->client = new $class;
     }
-
 
     /**
      *
@@ -52,11 +56,11 @@ class Crypt
      */
     public function createKey(int $bits = 1024, int $timeout = null, array $partial = [])
     {
-        return [
-            'privatekey' => '',
-            'publickey' => '',
-            'partialkey' => false
-        ];
+        try {
+            return $this->getClient()->createKey($bits, $timeout, $partial);
+        } catch (\Exception $e) {
+            throw new CryptException($e->getMessage());
+        }
     }
 
     /**
@@ -70,7 +74,7 @@ class Crypt
     public function encrypt(string $plaintext)
     {
         try {
-            return '';
+            return $this->getClient()->encrypt($plaintext);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -87,7 +91,7 @@ class Crypt
     public function decrypt(string $ciphertext)
     {
         try {
-            return '';
+            return $this->getClient()->decrypt($ciphertext);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -104,7 +108,7 @@ class Crypt
     public function sign(string $message)
     {
         try {
-            return '';
+            return $this->getClient()->sign($message);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -122,7 +126,7 @@ class Crypt
     public function verify(string $message, string $signature)
     {
         try {
-            return true;
+            return $this->getClient()->verify($message, $signature);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -131,14 +135,18 @@ class Crypt
     /**
      *
      * @author zxf
-     * @date    2020年5月28日
-     * @param  string $publicKey
-     * @return \Seffeng\Cryptlib\Crypt
+     * @date    2020年5月29日
+     * @param  string|array $key
+     * @param  integer $type optional
+     * @return boolean
      */
-    public function setPublicKey(string $publicKey = null)
+    public function loadKey($key, int $type = null)
     {
-        $this->publicKey = $publicKey;
-        return $this;
+        try {
+            return $this->getClient()->loadKey($key, $type);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -150,6 +158,20 @@ class Crypt
      */
     public function setPublicKeyFormat(int $format)
     {
+        $this->getClient()->setPublicKeyFormat($format);
+        return $this;
+    }
+
+    /**
+     *
+     * @author zxf
+     * @date    2020年5月28日
+     * @param  string $publicKey
+     * @return \Seffeng\Cryptlib\Crypt
+     */
+    public function setPublicKey(string $publicKey = null)
+    {
+        $this->getClient()->setPublicKey($publicKey);
         return $this;
     }
 
@@ -161,20 +183,7 @@ class Crypt
      */
     public function getPublicKey()
     {
-        return $this->publicKey;
-    }
-
-    /**
-     *
-     * @author zxf
-     * @date    2020年5月28日
-     * @param  string $privateKey
-     * @return \Seffeng\Cryptlib\Crypt
-     */
-    public function setPrivateKey(string $privateKey = null)
-    {
-        $this->privateKey = $privateKey;
-        return $this;
+        return $this->getClient()->getPublicKey();
     }
 
     /**
@@ -186,6 +195,20 @@ class Crypt
      */
     public function setPrivateKeyFormat(int $format)
     {
+        $this->getClient()->setPrivateKeyFormat($format);
+        return $this;
+    }
+
+    /**
+     *
+     * @author zxf
+     * @date    2020年5月28日
+     * @param  string $privateKey
+     * @return \Seffeng\Cryptlib\Crypt
+     */
+    public function setPrivateKey(string $privateKey = null)
+    {
+        $this->getClient()->setPrivateKey($privateKey);
         return $this;
     }
 
@@ -197,7 +220,7 @@ class Crypt
      */
     public function getPrivateKey()
     {
-        return $this->privateKey;
+        return $this->getClient()->getPrivateKey();
     }
 
     /**
@@ -209,6 +232,7 @@ class Crypt
      */
     public function setComment(string $comment)
     {
+        $this->getClient()->setComment($comment);
         return $this;
     }
 
@@ -220,7 +244,7 @@ class Crypt
      */
     public function getComment()
     {
-        return '';
+        return $this->getClient()->getComment();
     }
 
     /**
@@ -232,6 +256,7 @@ class Crypt
      */
     public function setEncryptionMode(int $mode)
     {
+        $this->getClient()->setEncryptionMode($mode);
         return $this;
     }
 
@@ -244,6 +269,7 @@ class Crypt
      */
     public function setSignatureMode(int $mode)
     {
+        $this->getClient()->setSignatureMode($mode);
         return $this;
     }
 
@@ -256,6 +282,7 @@ class Crypt
      */
     public function setHash(string $hash)
     {
+        $this->getClient()->setHash($hash);
         return $this;
     }
 
@@ -268,6 +295,7 @@ class Crypt
      */
     public function setMGFHash(string $hash)
     {
+        $this->getClient()->setMGFHash($hash);
         return $this;
     }
 
@@ -280,6 +308,7 @@ class Crypt
      */
     public function setPassword(bool $password = false)
     {
+        $this->getClient()->setPassword($password);
         return $this;
     }
 
@@ -292,6 +321,7 @@ class Crypt
      */
     public function setSaltLength(int $saltLength)
     {
+        $this->getClient()->setSaltLength($saltLength);
         return $this;
     }
 
@@ -304,7 +334,7 @@ class Crypt
      */
     public function getPublicKeyFingerprint(string $algorithm = 'md5')
     {
-        return '';
+        return $this->getClient()->getPublicKeyFingerprint();
     }
 
     /**
@@ -315,6 +345,17 @@ class Crypt
      */
     public function getSize()
     {
-        return 0;
+        return $this->getClient()->getSize();
+    }
+
+    /**
+     *
+     * @author zxf
+     * @date   2020年5月29日
+     * @return CryptInterface
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }

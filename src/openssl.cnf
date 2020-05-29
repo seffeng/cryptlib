@@ -1,0 +1,6 @@
+# openssl.cnf file for use with cryptlib.
+
+HOME            = .
+RANDFILE        = $ENV::HOME/.rnd
+
+[ ca ]
