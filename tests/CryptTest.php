@@ -11,20 +11,42 @@ class CryptTest extends TestCase
     public function testCrypt()
     {
         try {
-            $plaintext = '123456';
             $crypt = new Crypt();
-            // 加密
-            $entext = $crypt->encrypt($plaintext);
-            // 解密
-            $detext = $crypt->decrypt($entext);
+            $keys = $crypt->createKey();
+            $privateKey = isset($keys['privateKey']) ? $keys['privateKey'] : null;
+            $publicKey = isset($keys['publicKey']) ? $keys['publicKey'] : null;
+            //$crypt->setPrivateKey($privateKey)->setPublicKey($publicKey);
+
+            $plaintext = '123456';
+            // 加密[公钥]
+            $entext = $crypt->setPublicKey($publicKey)->encrypt($plaintext);
+            // 解密[私钥]
+            $detext = $crypt->setPrivateKey($privateKey)->decrypt($entext);
+            var_dump(base64_encode($entext), $detext);
+
+            //$crypt = new Crypt();
+            //$keys = $crypt->createKey();
+            //$privateKey = isset($keys['privateKey']) ? $keys['privateKey'] : null;
+            //$publicKey = isset($keys['publicKey']) ? $keys['publicKey'] : null;
+
+            $plaintext = '654321';
+            // 加密[私钥]
+            $entext = $crypt->setPrivateKey($privateKey)->encryptByPrivateKey($plaintext);
+            // 解密[公钥]
+            $detext = $crypt->setPublicKey($publicKey)->decryptByPublicKey($entext);
+            var_dump(base64_encode($entext), $detext);
+
+            //$crypt = new Crypt();
+            //$keys = $crypt->createKey();
+            //$privateKey = isset($keys['privateKey']) ? $keys['privateKey'] : null;
+            //$publicKey = isset($keys['publicKey']) ? $keys['publicKey'] : null;
 
             $message = 'a=aaa&b=bbb&c=ccc';
-            // 签名
-            $sign = $crypt->sign($message);
-            // 签名验证
-            $verify = $crypt->verify($message, $sign);
+            // 签名[私钥]
+            $sign = $crypt->setPrivateKey($privateKey)->sign($message);
+            // 签名验证[公钥]
+            $verify = $crypt->setPublicKey($publicKey)->verify($message, $sign);
 
-            var_dump(base64_encode($entext), $detext);
             var_dump(base64_encode($sign), $verify);
         } catch (CryptException $e) {
             echo $e->getMessage();

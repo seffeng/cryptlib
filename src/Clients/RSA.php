@@ -26,7 +26,7 @@ class RSA implements CryptInterface
      *
      * @var integer
      */
-    protected $signatureMode;
+    protected $signatureMode = OPENSSL_ALGO_SHA1;
 
     /**
      *
@@ -90,37 +90,23 @@ class RSA implements CryptInterface
             $configargs = [
                 'config' => dirname(__DIR__) .'/openssl.cnf',
                 'private_key_bits' => $bits,
-                'digest_alg' => 'sha256',
+                'private_key_type' => OPENSSL_KEYTYPE_RSA,
             ];
 
             $resource = openssl_pkey_new($configargs);
-            openssl_pkey_export($resource, $privatekey, true, $configargs);
-
-            $privatekey = str_replace([
-                '-----BEGIN PRIVATE KEY-----',
-                '-----END PRIVATE KEY-----',
-            ], [
-                '-----BEGIN RSA PRIVATE KEY-----',
-                '-----END RSA PRIVATE KEY-----',
-            ], $privatekey);
+            openssl_pkey_export($resource, $privatekey, null, $configargs);
 
             $publicDetails = openssl_pkey_get_details($resource);
             if (isset($publicDetails['key']) && $publicDetails['key']) {
-                $publicKey = str_replace([
-                    '-----BEGIN PUBLIC KEY-----',
-                    '-----END PUBLIC KEY-----',
-                ], [
-                    '-----BEGIN RSA PUBLIC KEY-----',
-                    '-----END RSA PUBLIC KEY-----',
-                ], $publicDetails['key']);
+                $publicKey = $publicDetails['key'];
 
                 return [
-                    'privatekey' => $privatekey,
-                    'publickey' => $publicKey,
-                    'partialkey' => false
+                    'privateKey' => $privatekey,
+                    'publicKey' => $publicKey,
+                    'partialKey' => false
                 ];
             }
-            return null;
+            throw new CryptException('rsa keys created failed.');
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -155,6 +141,22 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
+     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::encryptByPrivateKey()
+     */
+    public function encryptByPrivateKey(string $plaintext)
+    {
+        try {
+            $crypted = null;
+            openssl_private_encrypt($plaintext, $crypted, $this->getPrivateKey());
+            return $crypted;
+        } catch (\Exception $e) {
+            throw new CryptException($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::decrypt()
      */
     public function decrypt(string $ciphertext)
@@ -171,11 +173,33 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
+     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::decryptByPublicKey()
+     */
+    public function decryptByPublicKey(string $ciphertext)
+    {
+        try {
+            $decrypted = null;
+            openssl_public_decrypt($ciphertext, $decrypted, $this->getPublicKey());
+            return $decrypted;
+        } catch (\Exception $e) {
+            throw new CryptException($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::sign()
      */
     public function sign(string $message)
     {
-        return '123';
+        try {
+            $signature = null;
+            openssl_sign($message, $signature, $this->getPrivateKey(), $this->getSignatureMode());
+            return $signature;
+        } catch (\Exception $e) {
+            throw new CryptException($e->getMessage());
+        }
     }
 
     /**
@@ -185,7 +209,11 @@ class RSA implements CryptInterface
      */
     public function verify(string $message, string $signature)
     {
-        return true;
+        try {
+            return boolval(openssl_verify($message, $signature, $this->getPublicKey(), $this->getSignatureMode()));
+        } catch (\Exception $e) {
+            throw new CryptException($e->getMessage());
+        }
     }
 
     /**
@@ -253,9 +281,9 @@ class RSA implements CryptInterface
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setPrivateKey()
      */
-    public function setPrivateKey(string $privatekey, int $type = null)
+    public function setPrivateKey(string $privateKey, int $type = null)
     {
-        $this->privateKey = $privatekey;
+        $this->privateKey = $privateKey;
     }
 
     /**

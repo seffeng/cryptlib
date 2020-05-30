@@ -83,6 +83,23 @@ class Crypt
     /**
      *
      * @author zxf
+     * @date    2020年5月30日
+     * @param  string $plaintext
+     * @throws CryptException
+     * @return string
+     */
+    public function encryptByPrivateKey(string $plaintext)
+    {
+        try {
+            return $this->getClient()->encryptByPrivateKey($plaintext);
+        } catch (\Exception $e) {
+            throw new CryptException($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @author zxf
      * @date    2020年5月28日
      * @param  string $ciphertext
      * @throws CryptException
@@ -92,6 +109,23 @@ class Crypt
     {
         try {
             return $this->getClient()->decrypt($ciphertext);
+        } catch (\Exception $e) {
+            throw new CryptException($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @author zxf
+     * @date    2020年5月30日
+     * @param  string $ciphertext
+     * @throws CryptException
+     * @return string
+     */
+    public function decryptByPublicKey(string $ciphertext)
+    {
+        try {
+            return $this->getClient()->decryptByPublicKey($ciphertext);
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }

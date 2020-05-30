@@ -5,6 +5,8 @@
  */
 namespace Seffeng\Cryptlib\Interfaces;
 
+use Seffeng\Cryptlib\Exceptions\CryptException;
+
 interface CryptInterface
 {
     /**
@@ -14,6 +16,7 @@ interface CryptInterface
      * @param  int $bits
      * @param  int $timeout
      * @param  array $partial
+     * @throws CryptException
      * @return array
      */
     public function createKey(int $bits = 1024, int $timeout = null, array $partial = []);
@@ -24,6 +27,7 @@ interface CryptInterface
      * @date    2020年5月29日
      * @param  string|array $key
      * @param  int $type
+     * @throws CryptException
      * @return boolean
      */
     public function loadKey($key, int $type = null);
@@ -33,6 +37,7 @@ interface CryptInterface
      * @author zxf
      * @date    2020年5月29日
      * @param  string $plaintext
+     * @throws CryptException
      * @return string
      */
     public function encrypt(string $plaintext);
@@ -40,8 +45,19 @@ interface CryptInterface
     /**
      *
      * @author zxf
+     * @date    2020年5月30日
+     * @param  string $plaintext
+     * @throws CryptException
+     * @return string
+     */
+    public function encryptByPrivateKey(string $plaintext);
+
+    /**
+     *
+     * @author zxf
      * @date    2020年5月29日
      * @param  string $ciphertext
+     * @throws CryptException
      * @return string
      */
     public function decrypt(string $ciphertext);
@@ -49,8 +65,19 @@ interface CryptInterface
     /**
      *
      * @author zxf
+     * @date    2020年5月30日
+     * @param  string $ciphertext
+     * @throws CryptException
+     * @return string
+     */
+    public function decryptByPublicKey(string $ciphertext);
+
+    /**
+     *
+     * @author zxf
      * @date    2020年5月29日
      * @param  string $message
+     * @throws CryptException
      * @return string
      */
     public function sign(string $message);
@@ -61,6 +88,7 @@ interface CryptInterface
      * @date    2020年5月29日
      * @param  string $message
      * @param  string $signature
+     * @throws CryptException
      * @return boolean
      */
     public function verify(string $message, string $signature);

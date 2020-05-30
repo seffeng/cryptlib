@@ -3,4 +3,4 @@
 HOME            = .
 RANDFILE        = $ENV::HOME/.rnd
 
-[ ca ]
+[ v3_ca ]
