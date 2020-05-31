@@ -19,9 +19,9 @@ class CryptTest extends TestCase
 
             $plaintext = '123456';
             // 加密[公钥]
-            $entext = $crypt->setPublicKey($publicKey)->encrypt($plaintext);
+            $entext = $crypt->loadKey($publicKey)->encrypt($plaintext);
             // 解密[私钥]
-            $detext = $crypt->setPrivateKey($privateKey)->decrypt($entext);
+            $detext = $crypt->loadKey($privateKey)->decrypt($entext);
             var_dump(base64_encode($entext), $detext);
 
             //$crypt = new Crypt();
@@ -31,9 +31,9 @@ class CryptTest extends TestCase
 
             $plaintext = '654321';
             // 加密[私钥]
-            $entext = $crypt->setPrivateKey($privateKey)->encryptByPrivateKey($plaintext);
+            $entext = $crypt->loadKey($privateKey)->encryptByPrivateKey($plaintext);
             // 解密[公钥]
-            $detext = $crypt->setPublicKey($publicKey)->decryptByPublicKey($entext);
+            $detext = $crypt->loadKey($publicKey)->decryptByPublicKey($entext);
             var_dump(base64_encode($entext), $detext);
 
             //$crypt = new Crypt();
@@ -43,9 +43,9 @@ class CryptTest extends TestCase
 
             $message = 'a=aaa&b=bbb&c=ccc';
             // 签名[私钥]
-            $sign = $crypt->setPrivateKey($privateKey)->sign($message);
+            $sign = $crypt->loadKey($privateKey)->sign($message);
             // 签名验证[公钥]
-            $verify = $crypt->setPublicKey($publicKey)->verify($message, $sign);
+            $verify = $crypt->loadKey($publicKey)->verify($message, $sign);
 
             var_dump(base64_encode($sign), $verify);
         } catch (CryptException $e) {

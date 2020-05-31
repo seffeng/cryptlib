@@ -172,14 +172,16 @@ class Crypt
      * @date    2020年5月29日
      * @param  string|array $key
      * @param  integer $type optional
-     * @return boolean
+     * @throws CryptException
+     * @return \Seffeng\Cryptlib\Crypt
      */
     public function loadKey($key, int $type = null)
     {
         try {
-            return $this->getClient()->loadKey($key, $type);
+            $this->getClient()->loadKey($key, $type);
+            return $this;
         } catch (\Exception $e) {
-            return false;
+            throw new CryptException($e->getMessage());
         }
     }
 

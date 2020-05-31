@@ -95,6 +95,13 @@ class RSA implements CryptInterface
 
             $resource = openssl_pkey_new($configargs);
             openssl_pkey_export($resource, $privatekey, null, $configargs);
+            $privatekey = str_replace([
+                '-----BEGIN PRIVATE KEY-----',
+                '-----END PRIVATE KEY-----'
+            ],[
+                '-----BEGIN RSA PRIVATE KEY-----',
+                '-----END RSA PRIVATE KEY-----'
+            ], $privatekey);
 
             $publicDetails = openssl_pkey_get_details($resource);
             if (isset($publicDetails['key']) && $publicDetails['key']) {
@@ -119,7 +126,34 @@ class RSA implements CryptInterface
      */
     public function loadKey($key, int $type = null)
     {
-        return true;
+        try {
+            if (strpos($key, '-----BEGIN RSA PRIVATE KEY-----') !== false && strpos($key, '-----END RSA PRIVATE KEY-----') !== false && openssl_pkey_get_private($key)) {
+                $this->setPrivateKey($key);
+            } elseif (strpos($key, '-----BEGIN PRIVATE KEY-----') !== false && strpos($key, '-----END PRIVATE KEY-----') !== false && openssl_pkey_get_private($key)) {
+                $this->setPrivateKey($key);
+            } elseif (strpos($key, '-----BEGIN PUBLIC KEY-----') !== false && strpos($key, '-----END PUBLIC KEY-----') !== false && openssl_pkey_get_public($key)) {
+                $this->setPublicKey($key);
+            } elseif (strpos($key, '-----') === false) {
+                $key = preg_replace("/[\s]+/", '', $key);
+                if (strlen($key) < 500) {
+                    $key = '-----BEGIN PUBLIC KEY-----' . PHP_EOL. chunk_split($key, 64) . '-----END PUBLIC KEY-----';
+                    if (openssl_pkey_get_public($key)) {
+                        $this->setPublicKey($key);
+                    }
+                } else {
+                    $key = '-----BEGIN RSA PRIVATE KEY-----' . PHP_EOL. chunk_split($key, 64) . '-----END RSA PRIVATE KEY-----';
+                    if (openssl_pkey_get_private($key)) {
+                        $this->setPrivateKey($key);
+                    }
+                }
+            }
+            if ($this->getPrivateKey() || $this->getPublicKey()) {
+                return true;
+            }
+            throw new CryptException('invalid key.');
+        } catch (\Exception $e) {
+            throw new CryptException($e->getMessage());
+        }
     }
 
     /**
