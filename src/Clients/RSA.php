@@ -17,13 +17,23 @@ class RSA implements CryptInterface
     protected $comment;
 
     /**
-     *
+     * [OPENSSL_PKCS1_PADDING, OPENSSL_SSLV23_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING]
      * @var integer
      */
-    protected $encryptionMode;
+    protected $encryptionMode = OPENSSL_PKCS1_PADDING;
+    /**
+     * [OPENSSL_PKCS1_PADDING, OPENSSL_NO_PADDING]
+     * @var string
+     */
+    protected $privateEncryptionMode = OPENSSL_PKCS1_PADDING;
+    /**
+     * [OPENSSL_PKCS1_PADDING, OPENSSL_SSLV23_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING]
+     * @var string
+     */
+    protected $publicEncryptionMode = OPENSSL_PKCS1_PADDING;
 
     /**
-     *
+     * [OPENSSL_ALGO_SHA1, OPENSSL_ALGO_MD5, OPENSSL_ALGO_MD4, OPENSSL_ALGO_SHA224, OPENSSL_ALGO_SHA256, OPENSSL_ALGO_SHA384, OPENSSL_ALGO_SHA512, OPENSSL_ALGO_RMD160]
      * @var integer
      */
     protected $signatureMode = OPENSSL_ALGO_SHA1;
@@ -135,16 +145,13 @@ class RSA implements CryptInterface
                 $this->setPublicKey($key);
             } elseif (strpos($key, '-----') === false) {
                 $key = preg_replace("/[\s]+/", '', $key);
-                if (strlen($key) < 500) {
-                    $key = '-----BEGIN PUBLIC KEY-----' . PHP_EOL. chunk_split($key, 64) . '-----END PUBLIC KEY-----';
-                    if (openssl_pkey_get_public($key)) {
-                        $this->setPublicKey($key);
-                    }
-                } else {
-                    $key = '-----BEGIN RSA PRIVATE KEY-----' . PHP_EOL. chunk_split($key, 64) . '-----END RSA PRIVATE KEY-----';
-                    if (openssl_pkey_get_private($key)) {
-                        $this->setPrivateKey($key);
-                    }
+                $publicKey = '-----BEGIN PUBLIC KEY-----' . PHP_EOL. chunk_split($key, 64) . '-----END PUBLIC KEY-----';
+                $privateKey = '-----BEGIN RSA PRIVATE KEY-----' . PHP_EOL. chunk_split($key, 64) . '-----END RSA PRIVATE KEY-----';
+                if (openssl_pkey_get_public($publicKey)) {
+                    $this->setPublicKey($publicKey);
+                }
+                if (openssl_pkey_get_private($privateKey)) {
+                    $this->setPrivateKey($privateKey);
                 }
             }
             if ($this->getPrivateKey() || $this->getPublicKey()) {
@@ -165,7 +172,7 @@ class RSA implements CryptInterface
     {
         try {
             $crypted = null;
-            openssl_public_encrypt($plaintext, $crypted, $this->getPublicKey());
+            openssl_public_encrypt($plaintext, $crypted, $this->getPublicKey(), $this->getPublicEncryptionMode());
             return $crypted;
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
@@ -181,7 +188,7 @@ class RSA implements CryptInterface
     {
         try {
             $crypted = null;
-            openssl_private_encrypt($plaintext, $crypted, $this->getPrivateKey());
+            openssl_private_encrypt($plaintext, $crypted, $this->getPrivateKey(), $this->getPrivateEncryptionMode());
             return $crypted;
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
@@ -197,7 +204,7 @@ class RSA implements CryptInterface
     {
         try {
             $decrypted = null;
-            openssl_private_decrypt($ciphertext, $decrypted, $this->getPrivateKey());
+            openssl_private_decrypt($ciphertext, $decrypted, $this->getPrivateKey(), $this->getPublicEncryptionMode());
             return $decrypted;
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
@@ -213,7 +220,7 @@ class RSA implements CryptInterface
     {
         try {
             $decrypted = null;
-            openssl_public_decrypt($ciphertext, $decrypted, $this->getPublicKey());
+            openssl_public_decrypt($ciphertext, $decrypted, $this->getPublicKey(), $this->getPrivateEncryptionMode());
             return $decrypted;
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
@@ -244,7 +251,13 @@ class RSA implements CryptInterface
     public function verify(string $message, string $signature)
     {
         try {
-            return boolval(openssl_verify($message, $signature, $this->getPublicKey(), $this->getSignatureMode()));
+            $verity = openssl_verify($message, $signature, $this->getPublicKey(), $this->getSignatureMode());
+            if ($verity === 1) {
+                return true;
+            } elseif ($verity === 0) {
+                return false;
+            }
+            throw new CryptException('verify error.');
         } catch (\Exception $e) {
             throw new CryptException($e->getMessage());
         }
@@ -352,12 +365,47 @@ class RSA implements CryptInterface
 
     /**
      *
+     * @author zxf
+     * @date   2020年6月1日
+     * @return array
+     */
+    protected function getEncryptionModeItems()
+    {
+        return [OPENSSL_PKCS1_PADDING, OPENSSL_SSLV23_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING];
+    }
+
+    /**
+     *
+     * @author zxf
+     * @date   2020年6月1日
+     * @return array
+     */
+    protected function getPublicEncryptionModeItems()
+    {
+        return [OPENSSL_PKCS1_PADDING, OPENSSL_SSLV23_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING];
+    }
+
+    /**
+     *
+     * @author zxf
+     * @date   2020年6月1日
+     * @return array
+     */
+    protected function getPrivateEncryptionModeItems()
+    {
+        return [OPENSSL_PKCS1_PADDING, OPENSSL_NO_PADDING];
+    }
+
+    /**
+     *
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setEncryptionMode()
      */
     public function setEncryptionMode(int $mode)
     {
-        $this->encryptionMode = $mode;
+        if (in_array($mode, $this->getEncryptionModeItems())) {
+            $this->encryptionMode = $mode;
+        }
     }
 
     /**
@@ -372,12 +420,53 @@ class RSA implements CryptInterface
 
     /**
      *
+     * @author zxf
+     * @date   2020年6月1日
+     * @return number
+     */
+    public function getPrivateEncryptionMode()
+    {
+        if (in_array($this->getEncryptionMode(), $this->getPrivateEncryptionModeItems())) {
+            $this->privateEncryptionMode = $this->getEncryptionMode();
+        }
+        return $this->privateEncryptionMode;
+    }
+
+    /**
+     *
+     * @author zxf
+     * @date   2020年6月1日
+     * @return number
+     */
+    public function getPublicEncryptionMode()
+    {
+        if (in_array($this->getEncryptionMode(), $this->getPublicEncryptionModeItems())) {
+            $this->publicEncryptionMode = $this->getEncryptionMode();
+        }
+        return $this->publicEncryptionMode;
+    }
+
+    /**
+     *
+     * @author zxf
+     * @date   2020年6月1日
+     * @return array
+     */
+    protected function getSignatureModeItems()
+    {
+        return [OPENSSL_ALGO_SHA1, OPENSSL_ALGO_MD5, OPENSSL_ALGO_MD4, OPENSSL_ALGO_SHA224, OPENSSL_ALGO_SHA256, OPENSSL_ALGO_SHA384, OPENSSL_ALGO_SHA512, OPENSSL_ALGO_RMD160];
+    }
+
+    /**
+     *
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setSignatureMode()
      */
     public function setSignatureMode(int $mode)
     {
-        $this->signatureMode = $mode;
+        if (in_array($mode,  $this->getSignatureModeItems())) {
+            $this->signatureMode = $mode;
+        }
     }
 
     /**
