@@ -137,6 +137,7 @@ class RSA implements CryptInterface
     public function loadKey($key, int $type = null)
     {
         try {
+            is_file($key) && $key = file_get_contents($key);
             if (strpos($key, '-----BEGIN RSA PRIVATE KEY-----') !== false && strpos($key, '-----END RSA PRIVATE KEY-----') !== false && openssl_pkey_get_private($key)) {
                 $this->setPrivateKey($key);
             } elseif (strpos($key, '-----BEGIN PRIVATE KEY-----') !== false && strpos($key, '-----END PRIVATE KEY-----') !== false && openssl_pkey_get_private($key)) {
@@ -153,6 +154,8 @@ class RSA implements CryptInterface
                 if (openssl_pkey_get_private($privateKey)) {
                     $this->setPrivateKey($privateKey);
                 }
+            } else {
+                throw new CryptException('invalid key.');
             }
             if ($this->getPrivateKey() || $this->getPublicKey()) {
                 return true;

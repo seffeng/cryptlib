@@ -25,7 +25,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date    2020年5月29日
-     * @param  string|array $key
+     * @param  string|resource $key
      * @param  int $type
      * @throws CryptException
      * @return boolean
