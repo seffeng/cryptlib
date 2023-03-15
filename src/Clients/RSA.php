@@ -5,10 +5,10 @@
  */
 namespace Seffeng\Cryptlib\Clients;
 
-use Seffeng\Cryptlib\Interfaces\CryptInterface;
+use Seffeng\Cryptlib\Interfaces\RSAInterface;
 use Seffeng\Cryptlib\Exceptions\CryptException;
 
-class RSA implements CryptInterface
+class RSA implements RSAInterface
 {
     /**
      *
@@ -89,7 +89,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::createKey()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::createKey()
      */
     public function createKey(int $bits = 1024, int $timeout = null, array $partial = [])
     {
@@ -132,7 +132,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::loadKey()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::loadKey()
      */
     public function loadKey($key, int $type = null)
     {
@@ -169,7 +169,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::encrypt()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::encrypt()
      */
     public function encrypt(string $plaintext)
     {
@@ -185,7 +185,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::encryptByPrivateKey()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::encryptByPrivateKey()
      */
     public function encryptByPrivateKey(string $plaintext)
     {
@@ -201,7 +201,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::decrypt()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::decrypt()
      */
     public function decrypt(string $ciphertext)
     {
@@ -217,7 +217,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::decryptByPublicKey()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::decryptByPublicKey()
      */
     public function decryptByPublicKey(string $ciphertext)
     {
@@ -233,7 +233,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::sign()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::sign()
      */
     public function sign(string $message)
     {
@@ -249,7 +249,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::verify()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::verify()
      */
     public function verify(string $message, string $signature)
     {
@@ -269,17 +269,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setPublicKeyFormat()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setPublicKeyFormat()
      */
     public function setPublicKeyFormat(int $format)
     {
         $this->publicKeyFormat = $format;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getPublicKeyFormat()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getPublicKeyFormat()
      */
     public function getPublicKeyFormat()
     {
@@ -289,17 +290,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setPublicKey()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setPublicKey()
      */
     public function setPublicKey(string $publicKey, int $type = null)
     {
         $this->publicKey = $publicKey;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getPublicKey()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getPublicKey()
      */
     public function getPublicKey(int $type = null)
     {
@@ -309,17 +311,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setPrivateKeyFormat()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setPrivateKeyFormat()
      */
     public function setPrivateKeyFormat(int $format)
     {
         $this->privateKeyFormat = $format;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getPrivateKeyFormat()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getPrivateKeyFormat()
      */
     public function getPrivateKeyFormat()
     {
@@ -329,17 +332,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setPrivateKey()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setPrivateKey()
      */
     public function setPrivateKey(string $privateKey, int $type = null)
     {
         $this->privateKey = $privateKey;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getPrivateKey()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getPrivateKey()
      */
     public function getPrivateKey(int $type = null)
     {
@@ -349,17 +353,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setComment()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setComment()
      */
     public function setComment(string $comment)
     {
         $this->comment = $comment;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getComment()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getComment()
      */
     public function getComment()
     {
@@ -402,19 +407,20 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setEncryptionMode()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setEncryptionMode()
      */
     public function setEncryptionMode(int $mode)
     {
         if (in_array($mode, $this->getEncryptionModeItems())) {
             $this->encryptionMode = $mode;
         }
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getEncryptionMode()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getEncryptionMode()
      */
     public function getEncryptionMode()
     {
@@ -425,7 +431,7 @@ class RSA implements CryptInterface
      *
      * @author zxf
      * @date   2020年6月1日
-     * @return number
+     * @return integer
      */
     public function getPrivateEncryptionMode()
     {
@@ -439,7 +445,7 @@ class RSA implements CryptInterface
      *
      * @author zxf
      * @date   2020年6月1日
-     * @return number
+     * @return integer
      */
     public function getPublicEncryptionMode()
     {
@@ -463,19 +469,20 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setSignatureMode()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setSignatureMode()
      */
     public function setSignatureMode(int $mode)
     {
         if (in_array($mode,  $this->getSignatureModeItems())) {
             $this->signatureMode = $mode;
         }
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getSignatureMode()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getSignatureMode()
      */
     public function getSignatureMode()
     {
@@ -485,17 +492,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setHash()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setHash()
      */
     public function setHash(string $hash)
     {
         $this->hash = $hash;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getHash()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getHash()
      */
     public function getHash()
     {
@@ -505,17 +513,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setMGFHash()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setMGFHash()
      */
     public function setMGFHash(string $hash)
     {
         $this->mgfHash = $hash;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getMGFHash()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getMGFHash()
      */
     public function getMGFHash()
     {
@@ -525,17 +534,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setPassword()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setPassword()
      */
     public function setPassword(bool $password = false)
     {
         $this->password = $password;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getPassword()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getPassword()
      */
     public function getPassword()
     {
@@ -545,17 +555,18 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::setSaltLength()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setSaltLength()
      */
     public function setSaltLength(int $saltLength)
     {
         $this->saltLength = $saltLength;
+        return $this;
     }
 
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getSaltLength()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getSaltLength()
      */
     public function getSaltLength()
     {
@@ -565,7 +576,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getPublicKeyFingerprint()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getPublicKeyFingerprint()
      */
     public function getPublicKeyFingerprint(string $algorithm = 'md5')
     {
@@ -575,7 +586,7 @@ class RSA implements CryptInterface
     /**
      *
      * {@inheritDoc}
-     * @see \Seffeng\Cryptlib\Interfaces\CryptInterface::getSize()
+     * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getSize()
      */
     public function getSize()
     {
