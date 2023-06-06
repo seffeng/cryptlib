@@ -13,8 +13,8 @@ interface RSAInterface
      *
      * @author zxf
      * @date    2020年5月29日
-     * @param  int $bits
-     * @param  int $timeout
+     * @param  integer $bits
+     * @param  integer $timeout
      * @param  array $partial
      * @throws CryptException
      * @return array
@@ -26,7 +26,7 @@ interface RSAInterface
      * @author zxf
      * @date    2020年5月29日
      * @param  string|resource $key
-     * @param  int $type
+     * @param  integer $type
      * @throws CryptException
      * @return boolean
      */
@@ -181,7 +181,7 @@ interface RSAInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @param int $mode
+     * @param integer $mode
      */
     public function setEncryptionMode(int $mode);
 
@@ -197,7 +197,7 @@ interface RSAInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @param int $mode
+     * @param integer $mode
      */
     public function setSignatureMode(int $mode);
 
@@ -261,7 +261,7 @@ interface RSAInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @param int $saltLength
+     * @param integer $saltLength
      */
     public function setSaltLength(int $saltLength);
 

@@ -13,8 +13,8 @@ interface CryptInterface
      *
      * @author zxf
      * @date    2020年5月29日
-     * @param  int $bits
-     * @param  int $timeout
+     * @param  integer $bits
+     * @param  integer $timeout
      * @param  array $partial
      * @throws CryptException
      * @return array
@@ -26,7 +26,7 @@ interface CryptInterface
      * @author zxf
      * @date    2020年5月29日
      * @param  string|resource $key
-     * @param  int $type
+     * @param  integer $type
      * @throws CryptException
      * @return boolean
      */
@@ -105,7 +105,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @return number
+     * @return integer
      */
     public function getPublicKeyFormat();
 
@@ -139,7 +139,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @return number
+     * @return integer
      */
     public function getPrivateKeyFormat();
 
@@ -181,7 +181,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @param int $mode
+     * @param integer $mode
      */
     public function setEncryptionMode(int $mode);
 
@@ -189,7 +189,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date    2020年5月29日
-     * @return number
+     * @return integer
      */
     public function getEncryptionMode();
 
@@ -197,7 +197,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @param int $mode
+     * @param integer $mode
      */
     public function setSignatureMode(int $mode);
 
@@ -205,7 +205,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @return number
+     * @return integer
      */
     public function getSignatureMode();
 
@@ -261,7 +261,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date   2020年5月29日
-     * @param int $saltLength
+     * @param integer $saltLength
      */
     public function setSaltLength(int $saltLength);
 
@@ -269,7 +269,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date    2020年5月29日
-     * @return number
+     * @return integer
      */
     public function getSaltLength();
 
@@ -286,7 +286,7 @@ interface CryptInterface
      *
      * @author zxf
      * @date    2020年5月29日
-     * @return number
+     * @return integer
      */
     public function getSize();
 
