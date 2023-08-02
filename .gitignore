@@ -1,0 +1,8 @@
+.buildpath
+.idea
+.project
+.settings
+.vscode
+vendor
+composer.lock
+!.gitignore

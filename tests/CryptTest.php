@@ -19,9 +19,11 @@ class CryptTest extends TestCase
 
             $plaintext = '123456';
             // 加密[公钥]
-            $entext = $crypt->loadKey($publicKey)->encrypt($plaintext);
+            $crypt->loadKey($publicKey);
+            $entext = $crypt->encrypt($plaintext);
             // 解密[私钥]
-            $detext = $crypt->loadKey($privateKey)->decrypt($entext);
+            $crypt->loadKey($privateKey);
+            $detext = $crypt->decrypt($entext);
             var_dump(base64_encode($entext), $detext);
 
             //$crypt = new Crypt();
@@ -31,9 +33,11 @@ class CryptTest extends TestCase
 
             $plaintext = '654321';
             // 加密[私钥]
-            $entext = $crypt->loadKey($privateKey)->encryptByPrivateKey($plaintext);
+            $crypt->loadKey($privateKey);
+            $entext = $crypt->encryptByPrivateKey($plaintext);
             // 解密[公钥]
-            $detext = $crypt->loadKey($publicKey)->decryptByPublicKey($entext);
+            $crypt->loadKey($publicKey);
+            $detext = $crypt->decryptByPublicKey($entext);
             var_dump(base64_encode($entext), $detext);
 
             //$crypt = new Crypt();
@@ -43,11 +47,27 @@ class CryptTest extends TestCase
 
             $message = 'a=aaa&b=bbb&c=ccc';
             // 签名[私钥]
-            $sign = $crypt->loadKey($privateKey)->sign($message);
+            $crypt->loadKey($privateKey);
+            $sign = $crypt->sign($message);
             // 签名验证[公钥]
-            $verify = $crypt->loadKey($publicKey)->verify($message, $sign);
+            $crypt->loadKey($publicKey);
+            $verify = $crypt->verify($message, $sign);
 
             var_dump(base64_encode($sign), $verify);
+
+            // SM3
+            $crypt = new Crypt('SM3');
+            $plaintext = '123456';
+            $entext = $crypt->encrypt($plaintext);
+            var_dump($entext);
+
+            // SM4
+            $crypt = new Crypt('SM4');
+            $secret = 'EZIwtOeuqf8BI/j3D0CjuQ==';//$crypt->createKey();
+            $plaintext = '123456';
+            $entext = $crypt->setIv($secret)->encrypt($plaintext);
+            $detext = $crypt->setIv($secret)->decrypt($entext);
+            var_dump($entext, $detext);
         } catch (CryptException $e) {
             echo $e->getMessage();
         } catch (\Exception $e) {

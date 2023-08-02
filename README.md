@@ -15,6 +15,8 @@ $ composer require seffeng/cryptlib
 │  │  openssl.cnf
 │  ├─Clients
 │  │    RSA.php
+│  │    SM3.php
+│  │    SM4.php
 │  ├─Exceptions
 │  │    CryptException.php
 │  └─Interfaces
@@ -47,6 +49,17 @@ $crypt->sign($message);
 # 4、签名验证
 $crypt->loadKey($publicKey);
 $crypt->verify($message, $sign);
+
+# 5、SM3
+$crypt = new Crypt('SM3');
+$crypt->encrypt('abcd');
+
+# 6、SM4
+$crypt = new Crypt('SM4');
+$iv = 'EZIwtOeuqf8BI/j3D0CjuQ==';//$crypt->createKey();
+$plaintext = '123456';
+$entext = $crypt->setIv($iv)->encrypt($plaintext);
+$detext = $crypt->setIv($iv)->decrypt($entext);
 ```
 
 ### 示例
