@@ -379,7 +379,7 @@ class RSA implements RSAInterface
      */
     protected function getEncryptionModeItems()
     {
-        return [OPENSSL_PKCS1_PADDING, OPENSSL_SSLV23_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING];
+        return [OPENSSL_PKCS1_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING];
     }
 
     /**
@@ -390,7 +390,7 @@ class RSA implements RSAInterface
      */
     protected function getPublicEncryptionModeItems()
     {
-        return [OPENSSL_PKCS1_PADDING, OPENSSL_SSLV23_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING];
+        return [OPENSSL_PKCS1_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING];
     }
 
     /**
