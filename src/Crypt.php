@@ -81,9 +81,10 @@ class Crypt
     /**
      *
      * @author zxf
+     * @param string|null $client
      * @date    2020年5月28日
      */
-    public function __construct(string $client = null)
+    public function __construct(?string $client = null)
     {
         if (!extension_loaded('openssl')) {
             throw new CryptException('openssl extension must be loaded.');

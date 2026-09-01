@@ -23,7 +23,7 @@ interface SM3Interface
      * @author zxf
      * @date   2023-03-15
      * @param  string $algo
-     * @return stasic
+     * @return static
      */
     public function setAlgo(string $algo);
 

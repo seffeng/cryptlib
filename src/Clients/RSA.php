@@ -91,7 +91,7 @@ class RSA implements RSAInterface
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::createKey()
      */
-    public function createKey(int $bits = 1024, int $timeout = null, array $partial = [])
+    public function createKey(int $bits = 1024, ?int $timeout = null, array $partial = [])
     {
         try {
             $privatekey = null;
@@ -134,7 +134,7 @@ class RSA implements RSAInterface
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::loadKey()
      */
-    public function loadKey($key, int $type = null)
+    public function loadKey($key, ?int $type = null)
     {
         try {
             is_file($key) && $key = file_get_contents($key);
@@ -292,7 +292,7 @@ class RSA implements RSAInterface
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setPublicKey()
      */
-    public function setPublicKey(string $publicKey, int $type = null)
+    public function setPublicKey(string $publicKey, ?int $type = null)
     {
         $this->publicKey = $publicKey;
         return $this;
@@ -303,7 +303,7 @@ class RSA implements RSAInterface
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getPublicKey()
      */
-    public function getPublicKey(int $type = null)
+    public function getPublicKey(?int $type = null)
     {
         return $this->publicKey;
     }
@@ -334,7 +334,7 @@ class RSA implements RSAInterface
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::setPrivateKey()
      */
-    public function setPrivateKey(string $privateKey, int $type = null)
+    public function setPrivateKey(string $privateKey, ?int $type = null)
     {
         $this->privateKey = $privateKey;
         return $this;
@@ -345,7 +345,7 @@ class RSA implements RSAInterface
      * {@inheritDoc}
      * @see \Seffeng\Cryptlib\Interfaces\RSAInterface::getPrivateKey()
      */
-    public function getPrivateKey(int $type = null)
+    public function getPrivateKey(?int $type = null)
     {
         return $this->privateKey;
     }
@@ -390,7 +390,7 @@ class RSA implements RSAInterface
      */
     protected function getPublicEncryptionModeItems()
     {
-        return [OPENSSL_PKCS1_PADDING, OPENSSL_NO_PADDING, OPENSSL_PKCS1_OAEP_PADDING];
+        return $this->getEncryptionModeItems();
     }
 
     /**

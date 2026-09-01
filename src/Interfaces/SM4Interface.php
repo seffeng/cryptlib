@@ -31,7 +31,6 @@ interface SM4Interface
      *
      * @author zxf
      * @date   2023-03-10
-     * @param integer|null $length
      * @param boolean $strong
      * @return string
      */

@@ -19,7 +19,7 @@ interface CryptInterface
      * @throws CryptException
      * @return array
      */
-    public function createKey(int $bits = 1024, int $timeout = null, array $partial = []);
+    public function createKey(int $bits = 1024, ?int $timeout = null, array $partial = []);
 
     /**
      *
@@ -30,7 +30,7 @@ interface CryptInterface
      * @throws CryptException
      * @return boolean
      */
-    public function loadKey($key, int $type = null);
+    public function loadKey($key, ?int $type = null);
 
     /**
      *
@@ -116,7 +116,7 @@ interface CryptInterface
      * @param string $publicKey
      * @param integer $type optional
      */
-    public function setPublicKey(string $publicKey, int $type = null);
+    public function setPublicKey(string $publicKey, ?int $type = null);
 
     /**
      *
@@ -125,7 +125,7 @@ interface CryptInterface
      * @param integer $type optional
      * @return string
      */
-    public function getPublicKey(int $type = null);
+    public function getPublicKey(?int $type = null);
 
     /**
      *
@@ -150,7 +150,7 @@ interface CryptInterface
      * @param string $privateKey
      * @param integer $type optional
      */
-    public function setPrivateKey(string $privateKey, int $type = null);
+    public function setPrivateKey(string $privateKey, ?int $type = null);
 
     /**
      *
@@ -159,7 +159,7 @@ interface CryptInterface
      * @param integer $type optional
      * @return string
      */
-    public function getPrivateKey(int $type = null);
+    public function getPrivateKey(?int $type = null);
 
     /**
      *
